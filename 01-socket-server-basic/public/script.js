@@ -1,5 +1,4 @@
-const PORT = process.env.PORT || 3000;
-const socket = io(`http://localhost:${PORT}`);
+const socket = io(`https://basic-socketio.onrender.com/`);
 
 const form = document.querySelector("#form");
 const listMessage = document.querySelector("#list-message");
