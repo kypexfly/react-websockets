@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
+import { useSocketContext } from "../context/SocketContext";
 
-interface BandList {
-  data: Band[];
-  vote: (id: string) => void;
-  deleteBand: (id: string) => void;
-  changeName: (id: string, name: string) => void;
-}
-
-const BandList = ({ data, vote, deleteBand, changeName }: BandList) => {
-  const [bands, setBands] = useState(data);
+const BandList = () => {
+  const [bands, setBands] = useState<Band[]>([]);
+  const { socket } = useSocketContext();
 
   useEffect(() => {
-    setBands(data);
-  }, [data]);
+    socket.on("current-bands", (bands: Band[]) => {
+      setBands(bands);
+    });
+    return () => {
+      socket.off("current-bands");
+    };
+  }, [socket]);
 
-  const handleOnChange = (id: string, name: string) => {
+  const handleChangeName = (id: string, name: string) => {
     setBands(
       bands.map((band) => {
         if (band.id === id) {
@@ -26,8 +26,15 @@ const BandList = ({ data, vote, deleteBand, changeName }: BandList) => {
   };
 
   const onOffFocus = (id: string, name: string) => {
-    console.log(id, name);
-    changeName(id, name);
+    socket.emit("change-name", { id, name });
+  };
+
+  const vote = (id: string) => {
+    socket.emit("vote-band", id);
+  };
+
+  const deleteBand = (id: string) => {
+    socket.emit("delete-band", id);
   };
 
   const createRows = () => {
@@ -46,7 +53,7 @@ const BandList = ({ data, vote, deleteBand, changeName }: BandList) => {
             type="text"
             name={band.id}
             value={band.name}
-            onChange={(e) => handleOnChange(band.id, e.target.value)}
+            onChange={(e) => handleChangeName(band.id, e.target.value)}
             onBlur={(e) => onOffFocus(band.id, e.target.value)}
             className="w-full border p-2"
           />
