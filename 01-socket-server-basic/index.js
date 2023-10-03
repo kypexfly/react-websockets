@@ -1,22 +1,5 @@
-const express = require("express");
-const app = express();
+const Server = require("./models/server");
 
-const server = require("http").createServer(app);
+const server = new Server();
 
-const io = require("socket.io")(server);
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static(__dirname + "/public"));
-
-io.on("connection", (socket) => {
-  socket.on("message-to-server", (data) => {
-    console.log(data);
-    // io emits to all connected clients
-    io.emit("message-to-client", data);
-  });
-});
-
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+server.execute();
