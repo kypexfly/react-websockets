@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 
-type Band = {
-  id: string;
-  name: string;
-  votes: number;
-};
-
 interface BandList {
   data: Band[];
   vote: (id: string) => void;
