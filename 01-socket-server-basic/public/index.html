@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      referrerpolicy="no-referrer"
+    />
+    <title>MiniChat</title>
+  </head>
+  <body>
+    <h1 class="mt-5 text-lg font-bold">Mini Chat</h1>
+    <hr />
+
+    <form id="form">
+      <div class="p-4">
+        <div class="col">
+          <input type="text" id="input-message" placeholder="Message" class="border p-2" />
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white">Send</button>
+        </div>
+      </div>
+    </form>
+
+    <div>
+      <ul id="list-message" class="list-disc"></ul>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+      integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      const socket = io("http://localhost:3000");
+      
+      const form = document.querySelector("#form");
+      const listMessage = document.querySelector("#list-message");
+      const inputMessage = document.querySelector("#input-message");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newMessage = inputMessage.value;
+        socket.emit("message-to-server", {
+          message: newMessage,
+        });
+      });
+
+      socket.on("message-to-client", (data) => {
+        listMessage.innerHTML += `<li>${data.message}</li>`;
+      });
+    </script>
+  </body>
+</html>
