@@ -1,4 +1,5 @@
 import BandAdd from "./components/BandAdd";
+import BandCharts from "./components/BandCharts";
 import BandList from "./components/BandList";
 import { useSocketContext } from "./context/SocketContext";
 
@@ -20,6 +21,10 @@ function App() {
 
       <h1 className="text-xl my-3">Band Names</h1>
       <hr />
+
+      <div>
+        <BandCharts />
+      </div>
 
       <div className="grid grid-cols-12 py-3">
         <div className="col-span-8">
