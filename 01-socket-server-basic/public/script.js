@@ -1,4 +1,5 @@
-const socket = io("http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+const socket = io(`http://localhost:${PORT}`);
 
 const form = document.querySelector("#form");
 const listMessage = document.querySelector("#list-message");
