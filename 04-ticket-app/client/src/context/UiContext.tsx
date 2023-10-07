@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
 interface UiContextInterface {
   isOpen: boolean;
@@ -6,16 +6,16 @@ interface UiContextInterface {
   hideMenu: () => void;
 }
 
-const UiContext = createContext({} as UiContextInterface);
+export const UiContext = createContext({} as UiContextInterface);
 
 export const UiProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const showMenu = () => {
-    setIsOpen(false);
+    setIsOpen(true);
   };
   const hideMenu = () => {
-    setIsOpen(true);
+    setIsOpen(false);
   };
 
   return (
@@ -29,14 +29,4 @@ export const UiProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </UiContext.Provider>
   );
-};
-
-export const useUiContext = () => {
-  const context = useContext(UiContext);
-
-  if (!context) {
-    throw new Error("useUiContext must be used within a UiProvider");
-  }
-
-  return context;
 };

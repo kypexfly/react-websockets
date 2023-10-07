@@ -1,7 +1,10 @@
 import Container from "../components/Container";
 import { Button } from "../components/ui/Button";
+import { useHideMenu } from "../hooks/useHideMenu.ts";
 
 const CreateTicket = () => {
+  useHideMenu(true);
+
   return (
     <Container>
       <div className="max-w-xl mx-auto flex flex-col gap-6 text-center">

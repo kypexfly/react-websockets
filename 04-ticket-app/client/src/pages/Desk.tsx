@@ -1,12 +1,36 @@
+import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import { Button } from "../components/ui/Button";
+import { useHideMenu } from "../hooks/useHideMenu";
+import useGetUserStorage from "../hooks/useGetUserStorage";
+import { useState } from "react";
 
 const Desk = () => {
+  useHideMenu(false);
+  const navigate = useNavigate();
+  const [user] = useState(useGetUserStorage());
+
+  if (!user.agent || !user.desk) {
+    navigate("/desk");
+  }
+
+  const nextTicket = () => {
+    console.log("next ticket");
+  };
+
+  const logout = () => {
+    localStorage.removeItem("agent");
+    localStorage.removeItem("desk");
+    navigate("/login");
+  };
+
   return (
     <Container>
       <div>
         <div className="text-right">
-          <Button className="bg-red-500">Exit</Button>
+          <Button onClick={logout} className="bg-red-500">
+            Exit
+          </Button>
         </div>
 
         <h2 className="font-bold text-3xl mb-3">Ricardo</h2>
@@ -21,7 +45,9 @@ const Desk = () => {
       </div>
 
       <div className="text-right">
-        <Button className="bg-blue-500">Next Ticket</Button>
+        <Button onClick={nextTicket} className="bg-blue-500">
+          Next Ticket
+        </Button>
       </div>
     </Container>
   );
