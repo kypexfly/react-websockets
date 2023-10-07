@@ -4,18 +4,25 @@ import { Button } from "../components/ui/Button";
 import { useHideMenu } from "../hooks/useHideMenu";
 import useGetUserStorage from "../hooks/useGetUserStorage";
 import { useState } from "react";
+import { useSocketContext } from "../hooks/useSocketContext";
 
 const Desk = () => {
   useHideMenu(false);
   const navigate = useNavigate();
+
+  const { socket } = useSocketContext();
   const [user] = useState(useGetUserStorage());
+  const [ticket, setTicket] = useState<Ticket>();
 
   if (!user.agent || !user.desk) {
     navigate("/desk");
   }
 
   const nextTicket = () => {
-    console.log("next ticket");
+    console.log(user);
+    socket.emit("next-ticket", user, (ticket: Ticket) => {
+      setTicket(ticket);
+    });
   };
 
   const logout = () => {
@@ -33,16 +40,19 @@ const Desk = () => {
           </Button>
         </div>
 
-        <h2 className="font-bold text-3xl mb-3">Ricardo</h2>
+        <h2 className="font-bold text-3xl mb-3">Agent: {user.agent}</h2>
 
         <p>
-          You are working on desk: <span className="font-bold text-green-500">5</span>.
+          You are working on desk: <span className="font-bold text-green-500">{user.desk}</span>.
         </p>
       </div>
 
-      <div>
-        Attending ticket number: <span className="font-bold text-3xl text-red-500">55</span>
-      </div>
+      {ticket && (
+        <div>
+          Attending ticket number:{" "}
+          <span className="font-bold text-3xl text-red-500">{ticket.number}</span>
+        </div>
+      )}
 
       <div className="text-right">
         <Button onClick={nextTicket} className="bg-blue-500">

@@ -1,10 +1,10 @@
 const Ticket = require("./ticket");
 
 class TicketList {
-  coonstructor() {
+  constructor() {
     this.lastNumber = 0;
     this.pendings = [];
-    this.asigned = [];
+    this.assigned = [];
   }
 
   get nextNumber() {
@@ -13,7 +13,7 @@ class TicketList {
   }
 
   get lastThirteen() {
-    return this.asigned.slice(0, 13);
+    return this.assigned.slice(0, 13);
   }
 
   createTicket() {
@@ -32,7 +32,7 @@ class TicketList {
     nextTicket.agent = agent;
     nextTicket.desk = desk;
 
-    this.asigned.push(nextTicket);
+    this.assigned.unshift(nextTicket);
     return nextTicket;
   }
 }

@@ -1,50 +1,8 @@
+import { useEffect, useState } from "react";
 import Container from "../components/Container";
 import { useHideMenu } from "../hooks/useHideMenu";
+import { useSocketContext } from "../hooks/useSocketContext";
 import { cn } from "../utils/cn";
-
-type QueueData = {
-  ticketNo: number;
-  desk: number;
-  agent: string;
-};
-
-const data: QueueData[] = [
-  {
-    ticketNo: 33,
-    desk: 3,
-    agent: "Fernando Herrera",
-  },
-  {
-    ticketNo: 34,
-    desk: 4,
-    agent: "Melissa Flores",
-  },
-  {
-    ticketNo: 35,
-    desk: 5,
-    agent: "Carlos Castro",
-  },
-  {
-    ticketNo: 36,
-    desk: 3,
-    agent: "Fernando Herrera",
-  },
-  {
-    ticketNo: 37,
-    desk: 3,
-    agent: "Fernando Herrera",
-  },
-  {
-    ticketNo: 38,
-    desk: 2,
-    agent: "Melissa Flores",
-  },
-  {
-    ticketNo: 39,
-    desk: 5,
-    agent: "Carlos Castro",
-  },
-];
 
 interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {}
 
@@ -65,19 +23,32 @@ const Tag = ({ children, className, ...props }: TagProps) => {
 const Queue = () => {
   useHideMenu(true);
 
+  const { socket } = useSocketContext();
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+
+  useEffect(() => {
+    socket.on("ticket-assigned", (assigned: Ticket[]) => {
+      console.log(assigned)
+      setTickets(assigned);
+    });
+
+    return () => {
+      socket.off("ticket-assigned");
+    };
+  }, [socket]);
+
   return (
     <Container>
       <div className="mb-3">
         <h2 className="font-bold text-3xl mb-3">Attending client</h2>
-        <p>Enter your agent name and desk number to login to the system.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <ul className="space-y-3">
-            {data.slice(0, 2).map((item) => (
-              <li className="flex gap-3 py-3 border" key={item.ticketNo}>
-                <Tag className="text-3xl bg-transparent text-black">#{item.ticketNo}</Tag>
+            {tickets.slice(0, 3).map((item) => (
+              <li className="flex gap-3 py-3 border" key={item.number}>
+                <Tag className="text-3xl bg-transparent text-black">#{item.number}</Tag>
                 <Tag className="bg-orange-500">{item.agent}</Tag>
                 <Tag>Desk {item.desk}</Tag>
               </li>
@@ -88,9 +59,9 @@ const Queue = () => {
         <div>
           <h3 className="font-bold text-3xl mb-3">Historial</h3>
           <ul className="space-y-3">
-            {data.map((item) => (
-              <li className="flex gap-3 py-3 border p-2" key={item.ticketNo}>
-                <p>Ticket #{item.ticketNo}</p>
+            {tickets.slice(3).map((item) => (
+              <li className="flex gap-3 py-3 border p-2" key={item.number}>
+                <p>Ticket #{item.number}</p>
                 <Tag className="bg-orange-500">{item.agent}</Tag>
                 <Tag>Desk {item.desk}</Tag>
               </li>
